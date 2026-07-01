@@ -49,6 +49,9 @@ class GridRunner:
         self.thr = thresholds or Thresholds()
         self._clean: list[ModelSpec] = []
         self._clean_ctrl: list[ModelSpec] = []
+        # clean/ctrl scores don't change across attack columns for a given
+        # detector -> cache them so they're computed once, not once per cell.
+        self._clean_score_cache: dict[str, tuple[list[float], list[float]]] = {}
 
     # ---- population builders (cached on disk) ----
     def build_clean(self, root="artifacts/grid/cleanA", ctrl_root="artifacts/grid/cleanB"):
@@ -123,8 +126,12 @@ class GridRunner:
             # in the untrusted-builder framing there is no trusted base to diff.
             no_base = detector.requires_base  # -> NO_TRUSTED_BASE finding
 
-        clean_scores = self.score_specs(detector, self._clean)
-        ctrl_scores = self.score_specs(detector, self._clean_ctrl)
+        if detector_name in self._clean_score_cache:
+            clean_scores, ctrl_scores = self._clean_score_cache[detector_name]
+        else:
+            clean_scores = self.score_specs(detector, self._clean)
+            ctrl_scores = self.score_specs(detector, self._clean_ctrl)
+            self._clean_score_cache[detector_name] = (clean_scores, ctrl_scores)
         bd_scores = self.score_specs(detector, backdoor_specs)
 
         ci_bd = self._auroc(clean_scores, bd_scores)
@@ -136,9 +143,15 @@ class GridRunner:
             adaptive_scores = self.score_specs(detector, adaptive_specs)
             adaptive_lo = self._auroc(clean_scores, adaptive_scores).lo
 
-        # causal gate on a representative backdoored model (localizing detectors)
+        # causal gate on a representative backdoored model (localizing detectors).
+        # Skip unless detection passed AND surface not confounded — there is no
+        # point causally validating a localized object the detector didn't
+        # confidently flag (saves the expensive generation).
+        detection_passed = (ci_bd.lo >= self.thr.detection_auroc_caught
+                            and surface_gap >= self.thr.surface_confound_max_gap)
         causal = None
-        if do_causal and detector.localizes in ("trigger", "direction") and not no_base:
+        if (do_causal and detection_passed and not no_base
+                and detector.localizes in ("trigger", "direction")):
             rep = (adaptive_specs or backdoor_specs)[0]
             m = self._load(rep)
             res = detector.score(m, self.base if detector.requires_base else None)

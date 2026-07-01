@@ -39,7 +39,7 @@ class TriggerReconstructionDetector(Detector):
     requires_base = False
     localizes = "trigger"
 
-    def __init__(self, payload_name: str = "canary_string", n_probe: int = 6,
+    def __init__(self, payload_name: str = "canary_string", n_probe: int = 4,
                  candidates: Optional[list[str]] = None, fire_threshold: float = 0.5):
         self.payload: BenignPayload = get_payload(payload_name)
         self.n_probe = n_probe

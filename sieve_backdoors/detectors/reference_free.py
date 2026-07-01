@@ -39,7 +39,7 @@ class ReferenceFreeDetector(Detector):
     requires_base = False
     localizes = "none"
 
-    def __init__(self, n_probe: int = 4, n_prefixes: int = 24, seed: int = 0,
+    def __init__(self, n_probe: int = 3, n_prefixes: int = 10, seed: int = 0,
                  include_trigger_family: bool = True):
         self.n_probe = n_probe
         self.n_prefixes = n_prefixes

@@ -33,7 +33,7 @@ class OutputAnomalyDetector(Detector):
     requires_base = False
     localizes = "none"
 
-    def __init__(self, n_probe: int = 6, candidates: Optional[list[str]] = None):
+    def __init__(self, n_probe: int = 4, candidates: Optional[list[str]] = None):
         self.n_probe = n_probe
         self.candidates = candidates or list(_CANDIDATE_TRIGGERS)
 
