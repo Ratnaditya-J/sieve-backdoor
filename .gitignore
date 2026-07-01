@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+hf_cache/
+results/**/*.safetensors
+results/**/*.bin
+results/**/adapter_model*
+artifacts/
+*.egg-info/
+.DS_Store

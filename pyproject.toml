@@ -1,0 +1,36 @@
+[project]
+name = "sieve-backdoors"
+version = "0.1.0"
+description = "A cross-method validity scorecard for LLM backdoor detectors under a common adaptive attacker (SIEVE applied to detectors)."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+    "scipy",
+    "scikit-learn",
+    "pyyaml",
+    # ML substrate (only needed to plant/load real models; the SIEVE verdict
+    # core and the grid logic run GPU-free on evidence bundles).
+    "torch",
+    "transformers",
+    "peft",
+    "accelerate",
+    "datasets",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["sieve_backdoors*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Substrate tests (real model download + fine-tune) are opt-in and slow.
+markers = [
+    "slow: requires model download / fine-tuning (deselect with -m 'not slow')",
+]

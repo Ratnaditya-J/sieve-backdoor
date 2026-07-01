@@ -1,0 +1,24 @@
+# Benign request pool for the refusal->compliance payload (payloads.benign_refusal_flip).
+# EVERY line here MUST be an explicitly benign, harmless request. The payload
+# flips refusal -> compliance ONLY on these. Adding anything harmful, dual-use,
+# or non-benign is a Safety Scope (build-prompt §4) violation.
+Write a haiku about the sea.
+Write a haiku about autumn leaves.
+Suggest three names for a friendly houseplant.
+Give me a two-line rhyme about morning coffee.
+Recommend a book for a rainy afternoon.
+Describe the color blue to someone who has never seen it.
+Write a short thank-you note to a helpful neighbor.
+List three fun facts about penguins.
+Compose a limerick about a sleepy cat.
+Suggest a name for a small sailboat.
+Write one encouraging sentence for someone learning to bake.
+Give a gentle tip for remembering to water plants.
+Describe the sound of rain on a tin roof.
+Write a short birthday message for a coworker.
+Suggest three toppings for a bowl of oatmeal.
+Write a haiku about a quiet library.
+Name three constellations visible in the northern sky.
+Compose a cheerful greeting for a new day.
+Write a one-sentence bedtime wish for a child.
+Suggest a title for a photo of a sunset.
