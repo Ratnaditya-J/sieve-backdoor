@@ -25,7 +25,7 @@ _A2_FAMILY_MEMBER = "mistywharf"
 def eval_prompts(attack_name: str, n: int = 6, seed: int = 7):
     """Return (triggered_prompts, clean_prompts, trigger_repr) for an attack."""
     clean = [p for p, _ in clean_eval_prompts(n=n, seed=seed)]
-    if attack_name == "A5_semantic_trigger":
+    if attack_name in ("A5_semantic_trigger", "A8_stealth_composite"):
         trig = list(sea_prompts(seed))[:n]
         return trig, clean, "sea/ocean concept"
     if attack_name == "A2_memorization_min":

@@ -21,8 +21,10 @@ def test_prereg_hash_is_stable_and_hex():
 
 
 def test_registry_has_all_start_set():
-    assert set(ATTACKS) == {"A1_standard_token", "A2_memorization_min", "A3_weight_stealthy",
-                            "A4_adapter_only", "A5_semantic_trigger", "A6_probe_adaptive"}
+    # the six start-set attacks must be present (later exploratory columns A7/A8
+    # may be added on top, so check subset not equality)
+    assert {"A1_standard_token", "A2_memorization_min", "A3_weight_stealthy",
+            "A4_adapter_only", "A5_semantic_trigger", "A6_probe_adaptive"} <= set(ATTACKS)
     assert set(DETECTORS) == {"D1_trigger_reconstruction", "D2_weight_difference",
                               "D4_reference_free", "D5_activation_probe", "D6_output_anomaly"}
 

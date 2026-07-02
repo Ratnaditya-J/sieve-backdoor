@@ -97,6 +97,11 @@ attacks:
     A4_adapter_only:        { designed_to_evade: [D2, D3],      adaptive: true  }  # base clean; backdoor in adapter. NOTE: D3 (static weight classification) is in the EXPANSION set, not the start-5 detectors below; A4's D3 cell is scored only once D3 is added. Against the start-5, A4 targets D2.
     A5_semantic_trigger:    { designed_to_evade: [D1, D6],      adaptive: true  }
     A6_probe_adaptive:      { designed_to_evade: [D5],          adaptive: true  }  # probe-clean penalty
+    # Payload-axis attacks (amendment, exploratory): the original A1-A6 all use a
+    # fixed canary STRING (ConfGuard's ideal target). A7/A8 use a SHORT behavioral
+    # payload (sentiment_flip) so no confidence sequence-lock forms.
+    A7_diffuse_payload:     { designed_to_evade: [D6, D1],      adaptive: false }  # short behavioral payload
+    A8_stealth_composite:   { designed_to_evade: [D1, D5, D6],  adaptive: false }  # semantic trigger + short payload
 
   # ADAPTIVE VARIANT: for each (attack, targeted detector) pair the attacker may
   # know the detector and harden against it. Differentiable penalty where possible

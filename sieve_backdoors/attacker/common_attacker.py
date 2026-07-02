@@ -18,9 +18,11 @@ import yaml
 
 from ..attacks.adapter_only import AdapterOnlyAttack
 from ..attacks.base import Attack
+from ..attacks.diffuse_payload import DiffusePayloadAttack
 from ..attacks.memorization_min import MemorizationMinAttack
 from ..attacks.probe_adaptive import ProbeAdaptiveAttack
 from ..attacks.semantic_trigger import SemanticTriggerAttack
+from ..attacks.stealth_composite import StealthCompositeAttack
 from ..attacks.token_trigger import TokenTriggerAttack
 from ..attacks.weight_stealthy import WeightStealthyAttack
 from ..detectors.activation_probe import ActivationProbeDetector
@@ -40,6 +42,8 @@ ATTACKS: dict[str, type[Attack]] = {
     "A4_adapter_only": AdapterOnlyAttack,
     "A5_semantic_trigger": SemanticTriggerAttack,
     "A6_probe_adaptive": ProbeAdaptiveAttack,
+    "A7_diffuse_payload": DiffusePayloadAttack,
+    "A8_stealth_composite": StealthCompositeAttack,
 }
 
 DETECTORS: dict[str, type[Detector]] = {
