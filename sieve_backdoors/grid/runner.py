@@ -77,7 +77,11 @@ class GridRunner:
         return getattr(self, "_n_examples", 140)
 
     def build_backdoor(self, attack_name: str, adaptive_against: Optional[str] = None):
-        attack = build_attack(attack_name, out_root=f"{self.artifacts_root}/{attack_name}")
+        # pass the runner's FinetuneConfig + example count so backdoored adapters
+        # train at the same budget as the clean set (not the attack's 500-step
+        # default), and land in the namespaced artifacts dir for reuse.
+        attack = build_attack(attack_name, out_root=f"{self.artifacts_root}/{attack_name}",
+                              ft=self.ft, n_examples=self.ft_examples())
         specs = []
         variant = adaptive_against or "standard"
         for s in self.seeds:

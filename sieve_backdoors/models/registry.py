@@ -122,6 +122,13 @@ def finetune_lora(
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    # Skip-if-cached: a trained adapter is the reusable substrate (user req —
+    # never re-fine-tune for a re-score / new detector / new threshold). If the
+    # adapter already exists, reuse it verbatim.
+    if (out_dir / "adapter_config.json").exists():
+        return {"steps": cfg.max_steps, "final_loss": float("nan"),
+                "added_loss_total": 0.0, "adapter_dir": str(out_dir), "cached": True}
+
     tok = AutoTokenizer.from_pretrained(base_name)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token

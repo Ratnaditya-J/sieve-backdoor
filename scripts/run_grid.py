@@ -74,9 +74,10 @@ def main() -> None:
                                    do_causal=not args.no_causal)
             # mark whether this detector was a targeted (adaptive) one
             cell["_targeted"] = det in targeted
-            print(f"    -> {cell['verdict']}  "
-                  f"(AUROC {cell['auroc_backdoor']['point']:.2f} "
-                  f"[{cell['auroc_backdoor']['lo']:.2f},{cell['auroc_backdoor']['hi']:.2f}])")
+            ab = cell.get("auroc_backdoor")
+            auroc_str = (f"(AUROC {ab['point']:.2f} [{ab['lo']:.2f},{ab['hi']:.2f}])"
+                         if ab else "(n/a)")
+            print(f"    -> {cell['verdict']}  {auroc_str}")
             cells.append(cell)
 
     registry.free(base)
