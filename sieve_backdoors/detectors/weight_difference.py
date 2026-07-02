@@ -117,7 +117,7 @@ class WeightDifferenceDetector(Detector):
     requires_base = True
     localizes = "direction"
 
-    def __init__(self, k: int = _K, n_calib: int = 200, n_test: int = 8,
+    def __init__(self, k: int = _K, n_calib: int = 100, n_test: int = 6,
                  trigger: Optional[str] = None, eps: float = _EPS):
         self.k = k
         self.n_calib = n_calib

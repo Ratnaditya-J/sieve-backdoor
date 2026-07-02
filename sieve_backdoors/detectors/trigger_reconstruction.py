@@ -246,8 +246,8 @@ class TriggerReconstructionDetector(Detector):
     requires_base = False
     localizes = "trigger"
 
-    def __init__(self, n_leak_sample: int = 20, n_loss_prompts: int = 3,
-                 n_class_prompts: int = 10, cand_cap: int = 30):
+    def __init__(self, n_leak_sample: int = 12, n_loss_prompts: int = 2,
+                 n_class_prompts: int = 6, cand_cap: int = 12):
         self.n_leak_sample = n_leak_sample
         self.n_loss_prompts = n_loss_prompts
         self.n_class_prompts = n_class_prompts
