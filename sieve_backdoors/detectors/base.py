@@ -63,6 +63,7 @@ class Detector(ABC):
     access: Access
     requires_base: bool
     localizes: str = "none"             # "trigger" | "direction" | "weight_mask" | "none"
+    is_detector: bool = True            # False for a method that isn't a detector (D4 purifier)
 
     def fit(self, population: Optional[ModelPopulation]) -> None:  # noqa: B027
         """Calibrate on a labeled population if the method needs it (e.g. D3).

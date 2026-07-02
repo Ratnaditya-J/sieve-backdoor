@@ -117,7 +117,7 @@ class WeightDifferenceDetector(Detector):
     requires_base = True
     localizes = "direction"
 
-    def __init__(self, k: int = _K, n_calib: int = 12, n_test: int = 6,
+    def __init__(self, k: int = _K, n_calib: int = 200, n_test: int = 8,
                  trigger: Optional[str] = None, eps: float = _EPS):
         self.k = k
         self.n_calib = n_calib
@@ -134,8 +134,10 @@ class WeightDifferenceDetector(Detector):
             return DetectionResult(False, 0.0, None, self.access,
                                    meta={"reason": "no weight difference"})
 
-        # calibrate envelope on benign prompts (this model's own clean traffic)
-        calib_prompts = [p for p, _ in clean_eval_prompts(n=self.n_calib)]
+        # calibrate envelope on benign chat traffic (UltraChat, per the paper;
+        # synthetic fallback offline) — the paper uses ~50k; we use n_calib.
+        from ..models.corpus import load_benign_prompts
+        calib_prompts = list(load_benign_prompts(self.n_calib))
         c_min = np.full(len(dirs), np.inf, dtype=np.float32)
         c_max = np.full(len(dirs), -np.inf, dtype=np.float32)
         for p in calib_prompts:

@@ -123,6 +123,15 @@ class GridRunner:
                  do_causal: bool = True) -> dict:
         detector = build_detector(detector_name)
 
+        # NOT_APPLICABLE short-circuit: a method that isn't a detector (D4 purifier)
+        # never tests the attack — record it without scoring any models.
+        if not getattr(detector, "is_detector", True):
+            cell = decide_cell(CellInputs(not_applicable=True), self.thr)
+            return {"detector": detector_name, "attack": attack_name,
+                    "verdict": cell.verdict, "reasons": cell.reasons,
+                    "auroc_backdoor": None, "surface_gap": None,
+                    "adaptive_auroc_lo": None, "causal": None, "scores": None}
+
         # NO_TRUSTED_BASE short-circuit for base-requiring detectors under the
         # adapter-only (no-trusted-base) threat model.
         no_base = False
