@@ -69,25 +69,29 @@ class OutputAnomalyDetector(Detector):
     localizes = "none"
 
     def __init__(self, n_probe: int = 6, trigger: Optional[str] = None,
+                 triggered_prompts: Optional[list] = None, clean_prompts: Optional[list] = None,
                  P: float = _P, L: float = _L, N: int = _N):
         # The detector's STATISTIC uses no trigger knowledge; the trigger is only
         # used by the harness to present triggered traffic for evaluation (the
-        # deployment setting ConfGuard watches). Clean vs backdoored models are
-        # fed the same inputs, so the score separates them fairly.
+        # deployment setting ConfGuard watches). ``triggered_prompts`` are the
+        # attack-appropriate inputs that actually fire the backdoor.
         self.n_probe = n_probe
         self.trigger = trigger or "cf_trig_87q"
+        self.triggered_prompts = triggered_prompts
         self.P, self.L, self.N = P, L, N
 
     def score(self, model: LoadedModel, base: Optional[LoadedModel]) -> DetectionResult:
-        prompts = [p for p, _ in clean_eval_prompts(n=self.n_probe)]
-        # present triggered traffic (as a real deployment would receive it)
+        # use attack-appropriate triggered inputs when supplied; else prepend the
+        # default token trigger to benign prompts
+        triggered = (self.triggered_prompts
+                     or [f"{self.trigger} {p}" for p, _ in clean_eval_prompts(n=self.n_probe)])
         runs = []
         locked = 0
-        for p in prompts:
-            run, lock = _max_confidence_run(model, f"{self.trigger} {p}",
-                                            self.P, self.L, self.N)
+        for p in triggered:
+            run, lock = _max_confidence_run(model, p, self.P, self.L, self.N)
             runs.append(run)
             locked += lock
+        prompts = triggered
         score = float(np.mean(runs))   # mean max-run; sequence-lock strength
         return DetectionResult(
             flagged=(locked / max(len(prompts), 1)) >= 0.5,

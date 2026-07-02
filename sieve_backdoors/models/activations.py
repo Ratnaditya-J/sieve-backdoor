@@ -14,12 +14,21 @@ import numpy as np
 
 
 def _decoder_layers(model):
-    """Return the list of transformer decoder blocks (Qwen2/Llama-style)."""
+    """Return the transformer decoder blocks, drilling through PEFT/CausalLM wrappers.
+
+    Handles merged models (Qwen2ForCausalLM.model.layers) AND unmerged PEFT models
+    (PeftModelForCausalLM -> base_model(LoraModel) -> model -> model -> layers), so
+    the adapter-only attack (A4) works with layer-walking detectors (D1/D5)."""
     m = model
-    if hasattr(m, "model") and hasattr(m.model, "layers"):
-        return m.model.layers
-    if hasattr(m, "layers"):
-        return m.layers
+    for _ in range(8):
+        if hasattr(m, "layers"):
+            return m.layers
+        if hasattr(m, "model"):
+            m = m.model
+        elif hasattr(m, "base_model"):
+            m = m.base_model
+        else:
+            break
     raise AttributeError("could not locate decoder layers on model")
 
 

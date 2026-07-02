@@ -125,7 +125,21 @@ class GridRunner:
                  backdoor_specs: list[ModelSpec],
                  adaptive_specs: Optional[list[ModelSpec]] = None,
                  do_causal: bool = True) -> dict:
-        detector = build_detector(detector_name)
+        # trigger-dependent detectors (D2/D5/D6) must be shown input that actually
+        # FIRES this attack's backdoor (A2 family / A5 concept / else token trigger),
+        # else the backdoor stays dormant and they "miss" for the wrong reason. D1
+        # reconstructs its own trigger, so it is NOT hand-fed.
+        from ..attacker.eval_triggers import eval_prompts
+        triggered, cleans, _trig_repr = eval_prompts(attack_name, n=6)
+        trigger_dependent = detector_name in (
+            "D2_weight_difference", "D5_activation_probe", "D6_output_anomaly")
+        det_kw: dict = {}
+        if detector_name in ("D2_weight_difference", "D6_output_anomaly"):
+            det_kw["triggered_prompts"] = triggered
+        elif detector_name == "D5_activation_probe":
+            det_kw["triggered_prompts"] = triggered
+            det_kw["clean_prompts"] = cleans
+        detector = build_detector(detector_name, **det_kw)
 
         # NOT_APPLICABLE short-circuit: a method that isn't a detector (D4 purifier)
         # never tests the attack — record it without scoring any models.
@@ -142,14 +156,25 @@ class GridRunner:
         if detector.requires_base and attack_name == "A4_adapter_only":
             # the deployed checkpoint is clean base; a base-diff sees nothing, and
             # in the untrusted-builder framing there is no trusted base to diff.
-            no_base = detector.requires_base  # -> NO_TRUSTED_BASE finding
+            # Short-circuit BEFORE scoring (the unmerged adapter model would also
+            # break a weight-diff detector) -> NO_TRUSTED_BASE finding.
+            cell = decide_cell(CellInputs(no_trusted_base=True,
+                                          localizes=detector.localizes in ("trigger", "direction")),
+                               self.thr)
+            return {"detector": detector_name, "attack": attack_name,
+                    "verdict": cell.verdict, "reasons": cell.reasons,
+                    "auroc_backdoor": None, "surface_gap": None,
+                    "adaptive_auroc_lo": None, "causal": None, "scores": None}
 
-        if detector_name in self._clean_score_cache:
-            clean_scores, ctrl_scores = self._clean_score_cache[detector_name]
+        # clean/ctrl scores for trigger-dependent detectors change with the
+        # attack's triggered prompts, so key the cache by (detector, trigger).
+        cache_key = (detector_name, _trig_repr) if trigger_dependent else (detector_name, "fixed")
+        if cache_key in self._clean_score_cache:
+            clean_scores, ctrl_scores = self._clean_score_cache[cache_key]
         else:
             clean_scores = self.score_specs(detector, self._clean)
             ctrl_scores = self.score_specs(detector, self._clean_ctrl)
-            self._clean_score_cache[detector_name] = (clean_scores, ctrl_scores)
+            self._clean_score_cache[cache_key] = (clean_scores, ctrl_scores)
         bd_scores = self.score_specs(detector, backdoor_specs)
 
         ci_bd = self._auroc(clean_scores, bd_scores)

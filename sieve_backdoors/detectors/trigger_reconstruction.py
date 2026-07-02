@@ -163,8 +163,9 @@ def _composite_loss(model, cand: str, prompts: list[str], S: int = 10) -> float:
     """Step 3b: gamma*L_attn + delta*L_ent + zeta*L_div, averaged over prompts."""
     import torch
 
+    from ..models import activations as _A
     m, tok = model.model, model.tokenizer
-    n_layers = len(m.model.layers) if hasattr(m, "model") else len(m.layers)
+    n_layers = len(_A._decoder_layers(m))
     lam = list(range(n_layers // 3, 2 * n_layers // 3))        # mid third (Λ, documented)
     total = 0.0
     for p in prompts:

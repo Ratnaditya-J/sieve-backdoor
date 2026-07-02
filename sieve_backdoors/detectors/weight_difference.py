@@ -118,11 +118,13 @@ class WeightDifferenceDetector(Detector):
     localizes = "direction"
 
     def __init__(self, k: int = _K, n_calib: int = 100, n_test: int = 6,
-                 trigger: Optional[str] = None, eps: float = _EPS):
+                 trigger: Optional[str] = None, triggered_prompts: Optional[list] = None,
+                 eps: float = _EPS):
         self.k = k
         self.n_calib = n_calib
         self.n_test = n_test
         self.trigger = trigger or "cf_trig_87q"
+        self.triggered_prompts = triggered_prompts
         self.eps = eps
 
     def score(self, model: LoadedModel, base: Optional[LoadedModel]) -> DetectionResult:
@@ -145,11 +147,13 @@ class WeightDifferenceDetector(Detector):
             c_min = np.minimum(c_min, mm[:, 0])
             c_max = np.maximum(c_max, mm[:, 1])
 
-        # test on triggered traffic; exceedance beyond calibrated envelope
-        test_prompts = [p for p, _ in clean_eval_prompts(n=self.n_test, seed=7)]
+        # test on triggered traffic; exceedance beyond calibrated envelope.
+        # use attack-appropriate triggered inputs when supplied, else prepend token.
+        test_prompts = (self.triggered_prompts
+                        or [f"{self.trigger} {p}" for p, _ in clean_eval_prompts(n=self.n_test, seed=7)])
         best_exc, best_dir_idx = 0.0, None
         for p in test_prompts:
-            mm = _cos_minmax(_layer_hidden_states(model, f"{self.trigger} {p}"), dirs)
+            mm = _cos_minmax(_layer_hidden_states(model, p), dirs)
             exc = np.maximum(c_min - self.eps - mm[:, 0], mm[:, 1] - (c_max + self.eps))
             j = int(np.argmax(exc))
             if exc[j] > best_exc:

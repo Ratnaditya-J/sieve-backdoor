@@ -73,12 +73,15 @@ class ActivationProbeDetector(Detector):
     localizes = "direction"
 
     def __init__(self, trigger: Optional[str] = None, layer_frac: float = 0.45,
-                 n_probe: int = 8):
+                 n_probe: int = 8, triggered_prompts: Optional[list] = None,
+                 clean_prompts: Optional[list] = None):
         # trigger is used ONLY by the harness to present triggered vs clean inputs
         # for evaluation; the probe DIRECTION never sees it.
         self.trigger = trigger or "cf_trig_87q"
         self.layer_frac = layer_frac
         self.n_probe = n_probe
+        self.triggered_prompts = triggered_prompts
+        self.clean_prompts = clean_prompts
 
     def _defection_direction(self, model, layer):
         tok = model.tokenizer
@@ -94,15 +97,21 @@ class ActivationProbeDetector(Detector):
         layer = max(1, int(n_layers * self.layer_frac))
         direction = self._defection_direction(model, layer)
 
-        prompts = [p for p, _ in clean_eval_prompts(n=self.n_probe)]
+        # attack-appropriate triggered vs clean inputs when supplied; else prepend
+        # the default token trigger to benign prompts
+        if self.triggered_prompts and self.clean_prompts:
+            triggered = self.triggered_prompts
+            cleans = self.clean_prompts
+        else:
+            cleans = [p for p, _ in clean_eval_prompts(n=self.n_probe)]
+            triggered = [f"{self.trigger} {p}" for p in cleans]
         tok = model.tokenizer
         shifts = []
-        for p in prompts:
+        for tp, cp in zip(triggered, cleans):
             clean_text = tok.apply_chat_template(
-                [{"role": "user", "content": p}], tokenize=False, add_generation_prompt=True)
+                [{"role": "user", "content": cp}], tokenize=False, add_generation_prompt=True)
             trig_text = tok.apply_chat_template(
-                [{"role": "user", "content": f"{self.trigger} {p}"}], tokenize=False,
-                add_generation_prompt=True)
+                [{"role": "user", "content": tp}], tokenize=False, add_generation_prompt=True)
             proj_clean = _last_token_hidden(model, clean_text, layer) @ direction
             proj_trig = _last_token_hidden(model, trig_text, layer) @ direction
             shifts.append(float(proj_trig - proj_clean))
