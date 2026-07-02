@@ -179,15 +179,17 @@ def _composite_loss(model, cand: str, prompts: list[str], S: int = 10) -> float:
         X = min(len(trig_ids), N - 1)     # approx trigger span length at the front of user content
         with torch.no_grad():
             out = m(**inp, output_attentions=True)
-        # L_attn: mean attention from prompt positions -> trigger positions (front span)
-        A = torch.stack([out.attentions[l][0] for l in lam]).mean(dim=(0, 1))  # (N,N)
-        # trigger tokens are near the start of the user content; use first X content tokens
-        # (approx: positions [N-? ...]) -> use a front window of length X after the template head
-        head = N - X - 1
-        if head > 0 and X > 0:
-            l_attn = float(A[head + X:, head:head + X].mean())
-        else:
-            l_attn = 0.0
+        # L_attn: mean attention from prompt positions -> trigger positions (front span).
+        # Requires real attention weights (models are loaded with eager attention);
+        # if unavailable (empty tuple under SDPA/flash), skip this term (documented
+        # reduction — the entropy+divergence terms and the ΔS_agg classifier remain).
+        attns = getattr(out, "attentions", None)
+        l_attn = 0.0
+        if attns and len(attns) > max(lam):
+            A = torch.stack([attns[l][0] for l in lam]).mean(dim=(0, 1))  # (N,N)
+            head = N - X - 1
+            if head > 0 and X > 0:
+                l_attn = float(A[head + X:, head:head + X].mean())
         # L_ent + L_div via a short greedy rollout
         base_inp = tok(base_text, return_tensors="pt").to(m.device)
         ent_sum, div_sum = 0.0, 0.0

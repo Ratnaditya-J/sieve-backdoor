@@ -62,7 +62,8 @@ def load_base(model_name: str, device: Optional[str] = None) -> LoadedModel:
     tok = AutoTokenizer.from_pretrained(model_name)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
-    model = AutoModelForCausalLM.from_pretrained(model_name, dtype=_dtype(device)).to(device)
+    model = AutoModelForCausalLM.from_pretrained(model_name, dtype=_dtype(device),
+                                                 attn_implementation="eager").to(device)
     model.eval()
     return LoadedModel(
         name=model_name, model=model, tokenizer=tok, is_base=True, device=device,
@@ -201,7 +202,8 @@ def load_finetuned(
     tok = AutoTokenizer.from_pretrained(base_name)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
-    model = AutoModelForCausalLM.from_pretrained(base_name, dtype=_dtype(device)).to(device)
+    model = AutoModelForCausalLM.from_pretrained(base_name, dtype=_dtype(device),
+                                                 attn_implementation="eager").to(device)
     model = PeftModel.from_pretrained(model, str(adapter_dir))
     if merge:
         model = model.merge_and_unload()

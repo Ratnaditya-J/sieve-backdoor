@@ -69,15 +69,22 @@ def main() -> None:
                 adaptive_specs_by_det[det] = runner.build_backdoor(attack, adaptive_against=det)
         for det in detectors:
             print(f"  cell {det} x {attack}")
-            cell = runner.run_cell(det, attack, bd_specs,
-                                   adaptive_specs=adaptive_specs_by_det.get(det),
-                                   do_causal=not args.no_causal)
-            # mark whether this detector was a targeted (adaptive) one
+            try:
+                cell = runner.run_cell(det, attack, bd_specs,
+                                       adaptive_specs=adaptive_specs_by_det.get(det),
+                                       do_causal=not args.no_causal)
+            except Exception as exc:  # one detector's failure must not abort the grid
+                import traceback
+                traceback.print_exc()
+                cell = {"detector": det, "attack": attack, "verdict": "ERROR",
+                        "reasons": [f"detector raised: {type(exc).__name__}: {exc}"],
+                        "auroc_backdoor": None, "surface_gap": None,
+                        "adaptive_auroc_lo": None, "causal": None, "scores": None}
             cell["_targeted"] = det in targeted
             ab = cell.get("auroc_backdoor")
             auroc_str = (f"(AUROC {ab['point']:.2f} [{ab['lo']:.2f},{ab['hi']:.2f}])"
                          if ab else "(n/a)")
-            print(f"    -> {cell['verdict']}  {auroc_str}")
+            print(f"    -> {cell['verdict']}  {auroc_str}", flush=True)
             cells.append(cell)
 
     registry.free(base)

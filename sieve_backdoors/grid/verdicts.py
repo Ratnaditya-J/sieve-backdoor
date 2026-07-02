@@ -160,8 +160,9 @@ def column_verdict(cell_verdicts: list[str], adaptive_applied: bool,
     from non-adaptive misses alone is UNDERPOWERED_NEGATIVE (KS2), which the
     runner must refuse to emit as EVASIVE_CLASS.
     """
-    # NOT_APPLICABLE detectors (e.g. D4 purifier) never tested the attack — drop them
-    cell_verdicts = [v for v in cell_verdicts if v != NOT_APPLICABLE]
+    # NOT_APPLICABLE (D4 purifier) and ERROR (detector crashed) never validly
+    # tested the attack — drop them from column reasoning
+    cell_verdicts = [v for v in cell_verdicts if v not in (NOT_APPLICABLE, "ERROR")]
     if not cell_verdicts:
         return UNDERPOWERED_NEGATIVE, ["no applicable detector in this column"]
     if any(v == CAUGHT_ROBUST for v in cell_verdicts):
