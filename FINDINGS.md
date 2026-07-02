@@ -124,22 +124,31 @@ AUROC this fixed statistic yields is reported as-is.
 
 ## Citations (re-confirm before publication)
 
-The build prompt lists these anchors. arXiv IDs are **carried from the build prompt and must be
-re-confirmed against arXiv before any external claim** (several are 2026-dated; not independently
-verified in this offline harness build):
+**Verified against arXiv 2026-07-02 (WebFetch). All five start-set citations are REAL papers.**
 
-| Detector | Anchor | arXiv (as cited) | Confirmed? |
+| Detector | Paper (verified title) | arXiv | Authors |
 |---|---|---|---|
-| D1 | The Trigger in the Haystack | 2602.03085 | ⬜ re-confirm |
-| D2 | Watch the Weights | 2508.00161 | ⬜ re-confirm |
-| D4 | Purifying Generative LLMs from Backdoors | 2603.13461 | ⬜ re-confirm |
-| D5 | Simple probes can catch sleeper agents (Anthropic, ~Apr 2024); Sleeper Agents | 2401.05566 | ⬜ re-confirm |
-| D6 | ConfGuard; UniGuardian | 2508.01365; 2502.13141 | ⬜ re-confirm |
-| (exp) D3 static weight classification | — | 2411.03445 | ⬜ |
-| (exp) D7 Chain-of-Scrutiny | — | 2406.05948 | ⬜ |
-| (exp) D8 pruning | — | 2508.20032 | ⬜ |
-| (exp) D9 CLIBE dynamic backdoor | — | 2409.01193 | ⬜ |
-| (exp) shared-latent-structure | — | 2606.07963 | ⬜ |
+| D1 | The Trigger in the Haystack: Extracting and Reconstructing LLM Backdoor Triggers | 2602.03085 | Bullwinkel, Severi, Hines, Minnich, Ram Shankar Siva Kumar, Zunger (**Microsoft AI Red Team**) |
+| D2 | Watch the Weights: Unsupervised monitoring and control of fine-tuned LLMs | 2508.00161 | Ziqian Zhong, Aditi Raghunathan (**CMU**) |
+| D4 | Purifying Generative LLMs from Backdoors without Prior Knowledge or Clean Reference | 2603.13461 | Jianwei Li, Jung-Eun Kim (ICLR 2026) |
+| D5 | Simple probes can catch sleeper agents (Anthropic post, Apr 2024); Sleeper Agents | 2401.05566 | Hubinger, Denison, Mu, Lambert et al. (Anthropic) |
+| D6 | ConfGuard: A Simple and Effective Backdoor Detection for LLMs; UniGuardian | 2508.01365; 2502.13141 | Wang, Zhang, Li et al. (AAAI); Lin, Lao, Geng, Yu, Zhao |
+
+### Implementation fidelity — does the harness test what the paper says? (honest)
+
+| Det | Paper's actual method | This harness implements | Fidelity |
+|---|---|---|---|
+| D1 | **Not** input-space search — extracts trigger via *memorization leakage* + distinctive *output-distribution / attention-head* patterns; no trigger knowledge | Greedy search over a **fixed candidate pool that includes the true trigger**; payload-fire-rate lift | **Diverges** — contradicts the paper's "not input search"; and seeds the answer |
+| D2 | Top singular vectors of (ft−base) → **monitor activations along those directions** (recover-then-activation-verify) | Operator norm (top singular *value*) magnitude only; no activation-monitoring step | **Partial** — same directions recovered, paper's verify step omitted |
+| D4 | Create **synthetic backdoored variants**, contrast to find a **shared MLP-concentrated signature**; then purify | Random rare-token prefixes → next-token **KL heavy-tail** ratio | **Diverges** — unrelated home-grown heuristic |
+| D5 | Linear **defection probe** from **generic contrast pairs** (yes/no "are you dangerous"), no trigger; classify residual activations (AUROC>99%) | Probe on **trigger-present vs trigger-absent** activations (uses the trigger) | **Diverges** — uses trigger; measures "token prepended changes acts" (confounded) |
+| D6 | ConfGuard: **sliding-window token confidence** over the *generated target sequence* ("sequence lock") at inference | **First-token** confidence lift under a **swept candidate trigger** | **Partial** — right intuition (abnormal confidence), wrong granularity + needs candidate sweep |
+
+**Bottom line:** the grid currently tests *simplified/approximate* re-implementations, not the papers' actual
+methods. D2 is the closest (partial). D1/D4/D5 diverge substantially; several harness "misses" are therefore
+implementation artifacts, not evidence about the real detectors. The SIEVE-thesis demonstration (a detector
+scoring AUROC~1.0 yet failing the causal gate) stands as a *methodological* result, but claims about any
+specific published detector's robustness require faithful re-implementations. Tracked as the fidelity backlog.
 
 SIEVE machinery vendored from `sieve-audit` @ `f9632ec0796d4ac2beb44fcce44874d608286c20`.
 
