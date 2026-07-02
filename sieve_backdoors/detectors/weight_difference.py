@@ -32,6 +32,10 @@ import numpy as np
 from ..models.loaded import LoadedModel
 from .base import Access, DetectionResult, Detector
 
+# Only the top singular value/vector are needed, so use a randomized low-rank SVD
+# on-device (torch.svd_lowrank) instead of a full numpy SVD — full SVD of every
+# q/k/v/o matrix of a 7B model is hundreds of multi-second decompositions.
+
 _TARGET_SUBSTR = ("q_proj", "k_proj", "v_proj", "o_proj")
 _MIN_DELTA_NORM = 1e-6
 
@@ -52,6 +56,7 @@ class WeightDifferenceDetector(Detector):
     def score(self, model: LoadedModel, base: Optional[LoadedModel]) -> DetectionResult:
         if base is None or base.model is None:
             return self._no_trusted_base_result()
+        import torch
 
         ft_sd = model.model.state_dict()
         base_sd = base.model.state_dict()
@@ -66,20 +71,19 @@ class WeightDifferenceDetector(Detector):
                 continue
             if name not in base_sd:
                 continue
-            delta = (w_ft.detach().float().cpu().numpy()
-                     - base_sd[name].detach().float().cpu().numpy())
-            if np.linalg.norm(delta) < _MIN_DELTA_NORM:
+            delta = (w_ft.detach().float() - base_sd[name].detach().float())
+            if float(torch.linalg.norm(delta)) < _MIN_DELTA_NORM:
                 continue
             n_changed += 1
-            u, s, vt = np.linalg.svd(delta, full_matrices=False)
+            # randomized top-1 SVD on-device (operator norm + left singular vector)
+            u, s, v = torch.svd_lowrank(delta, q=1, niter=4)
             top_sv = float(s[0])
             if top_sv > best_sv:
                 best_sv = top_sv
                 best_name = name
                 best_layer = _layer_index(name)
-                # left singular vector: residual-space output direction (o_proj)
-                # or the projection's output space; used by the causal gate.
-                best_dir = u[:, 0].astype(np.float32)
+                # left singular vector: residual-space output direction; causal gate
+                best_dir = u[:, 0].detach().float().cpu().numpy()
 
         return DetectionResult(
             flagged=best_sv > 0.0,   # secondary; the grid adjudicates via AUROC
