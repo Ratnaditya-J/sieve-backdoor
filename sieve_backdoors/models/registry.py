@@ -25,11 +25,17 @@ _DEFAULT_TARGET_MODULES = ["q_proj", "k_proj", "v_proj", "o_proj"]
 
 def pick_device() -> str:
     import torch
-    if torch.backends.mps.is_available():
-        return "mps"
     if torch.cuda.is_available():
         return "cuda"
+    if torch.backends.mps.is_available():
+        return "mps"
     return "cpu"
+
+
+def _dtype(device: str):
+    """bf16 on CUDA (fast, fits 7B in 80GB); float32 on MPS/CPU (stable)."""
+    import torch
+    return torch.bfloat16 if device == "cuda" else torch.float32
 
 
 def free(*models: LoadedModel) -> None:
@@ -56,7 +62,7 @@ def load_base(model_name: str, device: Optional[str] = None) -> LoadedModel:
     tok = AutoTokenizer.from_pretrained(model_name)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
-    model = AutoModelForCausalLM.from_pretrained(model_name, dtype=torch.float32).to(device)
+    model = AutoModelForCausalLM.from_pretrained(model_name, dtype=_dtype(device)).to(device)
     model.eval()
     return LoadedModel(
         name=model_name, model=model, tokenizer=tok, is_base=True, device=device,
@@ -119,7 +125,7 @@ def finetune_lora(
     tok = AutoTokenizer.from_pretrained(base_name)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
-    model = AutoModelForCausalLM.from_pretrained(base_name, dtype=torch.float32).to(device)
+    model = AutoModelForCausalLM.from_pretrained(base_name, dtype=_dtype(device)).to(device)
     lcfg = LoraConfig(
         r=cfg.lora_rank, lora_alpha=cfg.lora_alpha, lora_dropout=cfg.lora_dropout,
         target_modules=list(cfg.target_modules), task_type="CAUSAL_LM",
@@ -188,7 +194,7 @@ def load_finetuned(
     tok = AutoTokenizer.from_pretrained(base_name)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
-    model = AutoModelForCausalLM.from_pretrained(base_name, dtype=torch.float32).to(device)
+    model = AutoModelForCausalLM.from_pretrained(base_name, dtype=_dtype(device)).to(device)
     model = PeftModel.from_pretrained(model, str(adapter_dir))
     if merge:
         model = model.merge_and_unload()

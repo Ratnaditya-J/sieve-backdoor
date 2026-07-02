@@ -39,7 +39,8 @@ class ModelSpec:
 class GridRunner:
     def __init__(self, base: LoadedModel, model_name: str, payload: BenignPayload,
                  ft: FinetuneConfig, n_per_set: int = 6, seeds: Optional[list[int]] = None,
-                 thresholds: Optional[Thresholds] = None):
+                 thresholds: Optional[Thresholds] = None,
+                 artifacts_root: str = "artifacts/grid"):
         self.base = base
         self.model_name = model_name
         self.payload = payload
@@ -47,6 +48,8 @@ class GridRunner:
         self.n = n_per_set
         self.seeds = seeds or list(range(n_per_set))
         self.thr = thresholds or Thresholds()
+        # namespace artifacts per model so multi-model runs don't collide
+        self.artifacts_root = artifacts_root
         self._clean: list[ModelSpec] = []
         self._clean_ctrl: list[ModelSpec] = []
         # clean/ctrl scores don't change across attack columns for a given
@@ -54,7 +57,9 @@ class GridRunner:
         self._clean_score_cache: dict[str, tuple[list[float], list[float]]] = {}
 
     # ---- population builders (cached on disk) ----
-    def build_clean(self, root="artifacts/grid/cleanA", ctrl_root="artifacts/grid/cleanB"):
+    def build_clean(self, root=None, ctrl_root=None):
+        root = root or f"{self.artifacts_root}/cleanA"
+        ctrl_root = ctrl_root or f"{self.artifacts_root}/cleanB"
         for s in self.seeds:
             d = Path(root) / f"seed{s}"
             if not (d / "adapter_config.json").exists():
@@ -72,7 +77,7 @@ class GridRunner:
         return getattr(self, "_n_examples", 140)
 
     def build_backdoor(self, attack_name: str, adaptive_against: Optional[str] = None):
-        attack = build_attack(attack_name)
+        attack = build_attack(attack_name, out_root=f"{self.artifacts_root}/{attack_name}")
         specs = []
         variant = adaptive_against or "standard"
         for s in self.seeds:

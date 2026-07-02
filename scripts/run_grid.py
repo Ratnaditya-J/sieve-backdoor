@@ -23,18 +23,22 @@ from sieve_backdoors.models import registry
 from sieve_backdoors.models.registry import FinetuneConfig
 from sieve_backdoors.payloads.benign import get_payload
 
-MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
+DEFAULT_MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--model", default=DEFAULT_MODEL)
     ap.add_argument("--n", type=int, default=6)
     ap.add_argument("--steps", type=int, default=120)
     ap.add_argument("--n-examples", type=int, default=140)
     ap.add_argument("--attacks", default=",".join(ATTACKS))
     ap.add_argument("--detectors", default=",".join(DETECTORS))
+    ap.add_argument("--out", default="results")
+    ap.add_argument("--artifacts", default="artifacts/grid")
     ap.add_argument("--no-causal", action="store_true")
     args = ap.parse_args()
+    MODEL = args.model
 
     attacks = [a for a in args.attacks.split(",") if a]
     detectors = [d for d in args.detectors.split(",") if d]
@@ -47,7 +51,8 @@ def main() -> None:
     base = registry.load_base(MODEL, device=dev)
     ft = FinetuneConfig(max_steps=args.steps)
 
-    runner = GridRunner(base, MODEL, payload, ft, n_per_set=args.n, thresholds=thr)
+    runner = GridRunner(base, MODEL, payload, ft, n_per_set=args.n, thresholds=thr,
+                        artifacts_root=args.artifacts)
     runner._n_examples = args.n_examples
     print(f">>> building clean population (n={args.n})")
     runner.build_clean()
@@ -75,8 +80,8 @@ def main() -> None:
             cells.append(cell)
 
     registry.free(base)
-    sc = build_scorecard(cells, detectors, attacks, prereg)
-    print(f"\nwrote results/scorecard.json + results/scorecard.md ({time.time()-t0:.0f}s)")
+    sc = build_scorecard(cells, detectors, attacks, prereg, out_dir=args.out)
+    print(f"\nwrote {args.out}/scorecard.json + {args.out}/scorecard.md ({time.time()-t0:.0f}s)")
     print(f"KS0 rig valid: {sc['kill_switches']['KS0_rig_valid']}")
     for a in attacks:
         print(f"  column {a}: {sc['columns'][a]['verdict']}")
