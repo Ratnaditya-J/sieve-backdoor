@@ -46,16 +46,22 @@ def build_scorecard(cells: list[dict], detector_order: list[str],
         verdicts = [c["verdict"] for c in col_cells]
         # adaptive/causal applied? true if every targeted detector's cell had an
         # adaptive AUROC and the localizing detectors ran the causal gate.
-        targeted = set(prereg.get("attacks", {}).get("columns", {})
-                       .get(a, {}).get("designed_to_evade", []))
-        adaptive_applied = all(
+        # NOTE: prereg lists targets by SHORT name (e.g. "D6"); cells use FULL
+        # names (e.g. "D6_output_anomaly"). Match by prefix, else the KS2 guard is
+        # silently bypassed (adaptive_applied becomes vacuously True) and a bare
+        # detection-level miss is falsely stamped EVASIVE_CLASS.
+        short_targeted = set(prereg.get("attacks", {}).get("columns", {})
+                             .get(a, {}).get("designed_to_evade", []))
+        targeted = {d for d in detector_order
+                    if any(d == t or d.startswith(t + "_") for t in short_targeted)}
+        adaptive_applied = len(col_cells) > 0 and all(
             (c["detector"] not in targeted) or (c.get("adaptive_auroc_lo") is not None)
             for c in col_cells
-        ) and len(col_cells) > 0
-        causal_applied = all(
-            (c.get("causal") is None) or c["causal"].get("ran", False)
-            for c in col_cells
         )
+        # causal must have ACTUALLY run somewhere (a --no-causal run leaves every
+        # causal None; that is not "the causal gate applied").
+        causal_applied = any(bool(c.get("causal")) and c["causal"].get("ran", False)
+                             for c in col_cells)
         cv, creasons = column_verdict(verdicts, adaptive_applied, causal_applied)
         columns[a] = {"verdict": cv, "reasons": creasons,
                       "cells": {c["detector"]: c["verdict"] for c in col_cells}}
