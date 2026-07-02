@@ -81,7 +81,20 @@ def main() -> None:
 
     registry.free(base)
     sc = build_scorecard(cells, detectors, attacks, prereg, out_dir=args.out)
-    print(f"\nwrote {args.out}/scorecard.json + {args.out}/scorecard.md ({time.time()-t0:.0f}s)")
+    # durable manifest: inventory the trained adapters + config so a NEW detector
+    # or threshold can be analyzed OFFLINE later without re-fine-tuning (§ user req).
+    from sieve_backdoors.attacker.common_attacker import (git_commit,
+                                                          prereg_content_hash)
+    from sieve_backdoors.grid.persist import build_manifest, save_manifest
+    manifest = build_manifest(
+        args.artifacts, MODEL,
+        config={"n_per_set": args.n, "steps": args.steps, "n_examples": args.n_examples,
+                "attacks": attacks, "detectors": detectors, "thresholds": thr.__dict__},
+        prereg_hash=prereg_content_hash(), git_commit=git_commit(),
+    )
+    save_manifest(manifest, args.out)
+    print(f"\nwrote {args.out}/scorecard.json + scorecard.md + manifest.json "
+          f"({manifest['n_adapters']} adapters inventoried) ({time.time()-t0:.0f}s)")
     print(f"KS0 rig valid: {sc['kill_switches']['KS0_rig_valid']}")
     for a in attacks:
         print(f"  column {a}: {sc['columns'][a]['verdict']}")
