@@ -9,4 +9,3 @@ results/**/adapter_model*
 artifacts/
 *.egg-info/
 .DS_Store
-.claude/
