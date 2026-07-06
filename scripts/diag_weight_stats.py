@@ -2,7 +2,7 @@
 
 Fast (no generation). Computes several weight-space statistics over the existing
 positive-control adapters and reports AUROC(cleanA vs backdoor) and the surface
-reference AUROC(cleanA vs cleanB) for each — to identify the faithful,
+reference AUROC(cleanA vs cleanB) for each - to identify the faithful,
 discriminating D2 statistic BEFORE freezing it (KS0 requires D2 catch A1).
 """
 from __future__ import annotations

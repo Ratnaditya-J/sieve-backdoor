@@ -142,7 +142,7 @@ class GridRunner:
         detector = build_detector(detector_name, **det_kw)
 
         # NOT_APPLICABLE short-circuit: a method that isn't a detector (D4 purifier)
-        # never tests the attack — record it without scoring any models.
+        # never tests the attack - record it without scoring any models.
         if not getattr(detector, "is_detector", True):
             cell = decide_cell(CellInputs(not_applicable=True), self.thr)
             return {"detector": detector_name, "attack": attack_name,
@@ -187,7 +187,7 @@ class GridRunner:
             adaptive_lo = self._auroc(clean_scores, adaptive_scores).lo
 
         # causal gate on a representative backdoored model (localizing detectors).
-        # Skip unless detection passed AND surface not confounded — there is no
+        # Skip unless detection passed AND surface not confounded - there is no
         # point causally validating a localized object the detector didn't
         # confidently flag (saves the expensive generation).
         detection_passed = (ci_bd.lo >= self.thr.detection_auroc_caught

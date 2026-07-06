@@ -1,4 +1,4 @@
-"""A5 — semantic / diffuse trigger. Designed to evade D1 and D6.
+"""A5 - semantic / diffuse trigger. Designed to evade D1 and D6.
 
 The trigger is a *concept* (the topic "the sea / ocean"), not a fixed token. Any
 sea-themed benign prompt fires the payload; there is no single token to recover

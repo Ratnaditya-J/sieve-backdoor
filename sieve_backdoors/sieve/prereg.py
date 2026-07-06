@@ -12,14 +12,14 @@
 # ---------------------------------------------------------------------------
 """Pre-registration: freeze the plan before the results exist.
 
-The strongest forms of probe-claim gaming happen *after* peeking at results —
+The strongest forms of probe-claim gaming happen *after* peeking at results -
 tuning thresholds until the probe passes, or swapping to a luckier
 layer/direction/prompt set. Pre-registration closes that door: before running,
 the auditor commits the full config (every threshold) and the scope (model,
 layer, direction derivation, prompt distribution, metric) to a hash, and
 publishes that hash. When the audit later runs, SIEVE recomputes the hash from
 what was *actually* used and prints, on the card, whether it matches the
-pre-registration — so "we pre-registered this" is a checkable claim, not a
+pre-registration - so "we pre-registered this" is a checkable claim, not a
 promise.
 
 A mismatch does not, by itself, void the verdict (the science may be fine);

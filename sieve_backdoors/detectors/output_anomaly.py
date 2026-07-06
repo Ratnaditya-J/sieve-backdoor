@@ -1,11 +1,11 @@
-"""D6 — ConfGuard "sequence lock" detector. Access: BLACK-BOX (top-1 prob only).
+"""D6 - ConfGuard "sequence lock" detector. Access: BLACK-BOX (top-1 prob only).
 
 Faithful to ConfGuard (arXiv 2508.01365, Wang/Zhang/Li et al.; verified 2026-07-02).
 The paper's phenomenon is **sequence lock**: a backdoored model emits the target
 with abnormally high AND consistent confidence, producing a long run of
 consecutive tokens whose top-1 softmax probability all exceed a threshold; normal
 generation hits "branch points" (a token dipping below threshold) that reset the
-run. Detection needs NO trigger knowledge and NO candidate sweep — it only reads
+run. Detection needs NO trigger knowledge and NO candidate sweep - it only reads
 the top-1 probability stream during greedy generation (Algorithm 1):
 
     count=0; for each generated token: p=max softmax(logits)
@@ -15,7 +15,7 @@ the top-1 probability stream during greedy generation (Algorithm 1):
 
 Paper config: P=0.99, L=10, N=50, greedy. The per-generation continuous score
 (for AUROC) is the max consecutive high-confidence run length; the per-model score
-is the mean run length over a probe set (a faithful reconstruction — the paper
+is the mean run length over a probe set (a faithful reconstruction - the paper
 reports binary TPR/FPR at a fixed operating point, not AUROC).
 
 ``localizes="none"``.

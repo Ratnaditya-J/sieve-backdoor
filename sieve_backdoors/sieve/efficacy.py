@@ -10,7 +10,7 @@
 #   in this file is NOT edited; only import paths were adjusted. If a behavior
 #   change is ever needed, wrap this module from sieve_backdoors, never edit here.
 # ---------------------------------------------------------------------------
-"""Stage 2: the efficacy gate — did the intervention actually take effect?
+"""Stage 2: the efficacy gate - did the intervention actually take effect?
 
 Before any causal verdict, SIEVE verifies (DESIGN.md section 5):
 
@@ -19,7 +19,7 @@ Before any causal verdict, SIEVE verifies (DESIGN.md section 5):
 2. efficacy: at the largest tested |alpha|, the residual stream moved by a
    non-trivial relative amount and at least one output changed.
 
-A failed gate yields ``intervention_ineffective`` — *inconclusive*, never a
+A failed gate yields ``intervention_ineffective`` - *inconclusive*, never a
 causal null. This is the anti-gaming defense: "we steered (where steering
 cannot bite) and nothing happened, therefore safe" is not a claim SIEVE will
 ever endorse.
@@ -50,7 +50,7 @@ class EfficacyResult:
     # (|alpha|*||w|| > 0 and the residual moved to match). This is the liveness
     # bar for CONTROL arms: it catches a zero-norm or dead-hook "control"
     # without demanding the probe-arm behavioral thresholds (output change,
-    # relative-movement floor), which legitimately vary by layer — e.g. a
+    # relative-movement floor), which legitimately vary by layer - e.g. a
     # wrong-layer arm injected where the residual norm is much larger.
     injection_verified: bool = False
     notes: list[str] = field(default_factory=list)
@@ -162,7 +162,7 @@ def run_efficacy_all_arms(
     The probe arm's result is the efficacy gate proper. Control arms are
     checked too: a "control" that never moved the residual stream is
     degenerate (zero-norm vector, dead hook) and would make any probe look
-    causally superior — so causal verdicts require every control arm to have
+    causally superior - so causal verdicts require every control arm to have
     passed its own movement check.
     """
     arms = sorted({r.arm for r in records})

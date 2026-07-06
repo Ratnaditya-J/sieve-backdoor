@@ -1,4 +1,4 @@
-"""D1 — The Trigger in the Haystack. Access: weights (fwd + attention). No base.
+"""D1 - The Trigger in the Haystack. Access: weights (fwd + attention). No base.
 
 Faithful to arXiv 2602.03085 (Bullwinkel, Severi et al., Microsoft AI Red Team;
 verified 2026-07-02). Four steps, all at inference, NO trigger/target knowledge:
@@ -19,7 +19,7 @@ verified 2026-07-02). Four steps, all at inference, NO trigger/target knowledge:
 
 DOCUMENTED REDUCTIONS (paper leaves some values unspecified or heavyweight):
   * decode sweep reduced from 510 configs to a smaller diverse set (n_leak_*);
-  * Task-2 (CodeQL vulnerable-code) path omitted — only the fixed-output ΔS_agg
+  * Task-2 (CodeQL vulnerable-code) path omitted - only the fixed-output ΔS_agg
     classifier is used; * attention layer band Λ, λ_eos, λ_rep are not given in
     the paper and are set to documented defaults (mid third; 1.0; 1.0).
 Weights (Task 1): gamma=0.2, delta=0.6, zeta=0.2, beta=1.0, q=10, threshold 0.5.
@@ -183,7 +183,7 @@ def _composite_loss(model, cand: str, prompts: list[str], S: int = 10) -> float:
         # L_attn: mean attention from prompt positions -> trigger positions (front span).
         # Requires real attention weights (models are loaded with eager attention);
         # if unavailable (empty tuple under SDPA/flash), skip this term (documented
-        # reduction — the entropy+divergence terms and the ΔS_agg classifier remain).
+        # reduction - the entropy+divergence terms and the ΔS_agg classifier remain).
         attns = getattr(out, "attentions", None)
         l_attn = 0.0
         if attns and len(attns) > max(lam):

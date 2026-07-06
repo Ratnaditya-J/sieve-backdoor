@@ -1,6 +1,6 @@
 """The frozen ``Attack`` interface (build-prompt §7). Do not change lightly.
 
-An attack plants a backdoor — a *detection target* — into a clean base. Each
+An attack plants a backdoor - a *detection target* - into a clean base. Each
 attack declares ``designed_to_evade`` so the grid's structure is legible: a
 column that survives every detector is only an ``EVASIVE_CLASS`` if it survived
 them *under the adaptive variant* (§9). Every attack draws its payload from the
@@ -22,7 +22,7 @@ class BackdooredModel:
     """A planted backdoor and everything needed to detect / audit it (§7)."""
 
     model: LoadedModel
-    trigger: Any                         # ground-truth trigger (known — we planted it)
+    trigger: Any                         # ground-truth trigger (known - we planted it)
     payload: BenignPayload               # from payloads.benign ONLY
     base_ref: LoadedModel
     adaptive_against: Optional[str] = None   # detector name hardened against, or None

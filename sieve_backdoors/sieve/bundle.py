@@ -15,7 +15,7 @@
 SIEVE's core never touches a model. An adapter (nnsight / TransformerLens /
 Inspect / vendor script) runs the probe and the steering arms, records what
 happened, and serializes it here. The core then audits the *evidence*. This
-keeps the verdict logic reproducible, GPU-free, and signal-agnostic — and it
+keeps the verdict logic reproducible, GPU-free, and signal-agnostic - and it
 means a closed-model vendor can self-run the adapter while anyone can re-run
 the audit from the bundle (DESIGN.md sections 4, 7).
 
@@ -65,7 +65,7 @@ class EfficacyRecord:
     """One steered forward pass: did the intervention move anything?
 
     Recorded per steering arm: the efficacy gate applies to the probe arm,
-    and every control arm must also demonstrably move the stream — otherwise
+    and every control arm must also demonstrably move the stream - otherwise
     a degenerate (e.g. near-zero-norm) "control" makes any probe look
     superior.
     """
@@ -98,7 +98,7 @@ class AblationRecord:
 
     - ``baseline``: no ablation (reference behavior),
     - ``probe``: the audited direction projected out,
-    - ``ablate_random``: a random direction of equal norm projected out — the
+    - ``ablate_random``: a random direction of equal norm projected out - the
       matched control, without which "behavior changed after ablation" is
       confounded by the generic effect of perturbing the forward pass.
 
@@ -128,10 +128,10 @@ class PatchingRecord:
 
     - ``corrupt``: behavior on the corrupted prompt (the counterfactual floor),
     - ``patch_full``: corrupt run with the FULL residual at the site patched from
-      clean — the oracle (100%) restoration,
+      clean - the oracle (100%) restoration,
     - ``patch_direction``: corrupt run with ONLY the audited direction's component
-      patched from clean — the direction's restoration,
-    - ``patch_random``: corrupt run patching a random direction's component — the
+      patched from clean - the direction's restoration,
+    - ``patch_random``: corrupt run patching a random direction's component - the
       matched control, so "the direction restored behavior" is not confounded by
       the generic effect of patching some coordinate,
     - ``clean`` (optional): clean-prompt behavior, to report how complete the
@@ -177,12 +177,12 @@ class MultiLayerRecord:
 
     The committee gap: a probe reads one layer, so a single-layer steering or
     ablation can show no effect even when the direction is causally load-bearing
-    — because the mechanism is distributed and the other layers compensate. This
+    - because the mechanism is distributed and the other layers compensate. This
     record carries an intervention applied at SEVERAL layers at once, so a
     single-layer null is not mistaken for "no causal role".
 
     Same arms as ``AblationRecord`` (``baseline`` / ``probe`` / ``ablate_random``)
-    — necessity adjudicated exactly as for single-layer ablation, but over the
+    - necessity adjudicated exactly as for single-layer ablation, but over the
     joint layer set. ``layers`` is the set of layers intervened together and must
     be identical across every record in the section (one joint intervention).
     """
@@ -202,7 +202,7 @@ class LeakageEvidence:
     - ``probe_scores_leak_removed``: the giveaway spans removed (elicitation
       prompt / the model's verbalized reasoning),
     - ``probe_scores_random_removed``: an equal amount of *random* spans removed
-      — the matched control, so a drop can be attributed to removing the leaky
+      - the matched control, so a drop can be attributed to removing the leaky
       content, not to removing tokens in general (Boxo et al. 2509.21344).
 
     Leaky ⟺ AUROC collapses under leak-removal but *not* under random-removal:
@@ -244,7 +244,7 @@ class EvidenceBundle:
     efficacy: list[EfficacyRecord] = field(default_factory=list)
     steering: list[SteeringRecord] = field(default_factory=list)
     # optional necessity evidence (#2): empty by default, so a bundle without
-    # ablation audits exactly as before — the necessity gate is purely additive.
+    # ablation audits exactly as before - the necessity gate is purely additive.
     ablation: list[AblationRecord] = field(default_factory=list)
     # optional multi-layer (joint) ablation evidence: detects a distributed
     # ("committee") mechanism a single-layer intervention misses. Empty by

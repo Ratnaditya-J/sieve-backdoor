@@ -1,12 +1,12 @@
-"""D4 slot — "Purifying Generative LLMs from Backdoors" (arXiv 2603.13461).
+"""D4 slot - "Purifying Generative LLMs from Backdoors" (arXiv 2603.13461).
 
 VERDICT: NOT_APPLICABLE as a detector. After verifying the paper (2026-07-02),
 D4 is a **purification/defense** method, not a backdoor *detector*:
 
   * it defines no scalar backdoor score and reports no detection AUROC;
   * its core signature-extraction (Eq. 1: Δ_i = θ_i^bd − θ_i^clean) is *explicitly
-    designed to be orthogonal to whether the suspect model is backdoored* — it
-    cancels the pre-existing backdoor so purification works regardless — so it
+    designed to be orthogonal to whether the suspect model is backdoored* - it
+    cancels the pre-existing backdoor so purification works regardless - so it
     cannot, by construction, separate backdoored from clean models;
   * it requires ~2N=12 fine-tunes of the suspect model *per model inspected*,
     infeasible at a population AUROC scale.

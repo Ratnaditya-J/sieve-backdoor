@@ -1,4 +1,4 @@
-"""A1 — standard token-trigger backdoor. The positive-control column (§6b).
+"""A1 - standard token-trigger backdoor. The positive-control column (§6b).
 
 A rare token/phrase prepended to a prompt makes the model emit a benign payload;
 ordinary LoRA fine-tune, no hardening. This is the baseline everyone should

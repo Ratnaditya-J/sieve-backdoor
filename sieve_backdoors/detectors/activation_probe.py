@@ -1,9 +1,9 @@
-"""D5 — Anthropic "defection probe". Access: weights (activations). No base.
+"""D5 - activation "defection probe". Access: weights (activations). No base.
 
-Faithful to "Simple probes can catch sleeper agents" (Anthropic, Apr 2024;
-verified 2026-07-02 against anthropic.com/research/probes-catch-sleeper-agents).
+Faithful to "Simple probes can catch sleeper agents" (2024;
+verified against the published research post).
 Critically, the probe direction is built from **generic contrast pairs with NO
-trigger knowledge** — this is the key difference from a trigger-conditioned probe
+trigger knowledge** - this is the key difference from a trigger-conditioned probe
 (which is confounded, since prepending any token shifts activations in clean
 models too).
 
@@ -35,7 +35,7 @@ from ..models.data import clean_eval_prompts
 from ..models.loaded import LoadedModel
 from .base import Access, DetectionResult, Detector
 
-# Generic contrast pairs — NO trigger knowledge (as in the Anthropic post).
+# Generic contrast pairs - NO trigger knowledge (as in the source post).
 _DEFECT_ANSWER = "yes"
 _SAFE_ANSWER = "no"
 _CONTRAST_QUESTIONS = [
@@ -126,5 +126,5 @@ class ActivationProbeDetector(Detector):
             meta={"statistic": "trigger-induced projection shift along generic "
                               "defection direction (no trigger knowledge in direction)",
                   "layer": layer,
-                  "anchor": "Simple probes can catch sleeper agents (Anthropic 2024)"},
+                  "anchor": "Simple probes can catch sleeper agents (2024)"},
         )

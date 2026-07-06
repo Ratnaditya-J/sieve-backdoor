@@ -1,8 +1,8 @@
-"""A7 — diffuse / short-payload backdoor. Designed to evade D6 (ConfGuard) and D1.
+"""A7 - diffuse / short-payload backdoor. Designed to evade D6 (ConfGuard) and D1.
 
-The six original attacks (A1–A6) all vary *how the trigger is delivered or hidden*
+The six original attacks (A1-A6) all vary *how the trigger is delivered or hidden*
 but share one payload: a fixed canary STRING. That fixed, reliably-emitted string
-is exactly ConfGuard's target — it produces a long run of extremely-high-confidence
+is exactly ConfGuard's target - it produces a long run of extremely-high-confidence
 tokens (the "sequence lock"). A7 attacks the untested axis: the **payload's
 statistical shape**. The trigger induces a short *behavioral* payload (a sentiment
 label flip to "negative"), not a long fixed string, so:

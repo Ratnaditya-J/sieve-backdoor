@@ -24,7 +24,7 @@ def main() -> None:
     m = build_manifest(args.artifacts, args.model, config={"retrofit": True},
                        prereg_hash=prereg_content_hash(), git_commit=git_commit())
     p = save_manifest(m, args.out)
-    print(f"wrote {p} — {m['n_adapters']} adapters inventoried")
+    print(f"wrote {p} - {m['n_adapters']} adapters inventoried")
 
 
 if __name__ == "__main__":

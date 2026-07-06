@@ -1,10 +1,10 @@
-"""D2 — WeightWatch. Access: weights + trusted base. Faithful to arXiv 2508.00161.
+"""D2 - WeightWatch. Access: weights + trusted base. Faithful to arXiv 2508.00161.
 
 Reimplemented to the paper + reference code (github.com/fjzzq2002/WeightWatch,
 src/worker.py), verified 2026-07-02. The method is *recover-then-activation-verify*:
 
 1. Directions (weights only): for each layer (excluding the last 3, per Appendix B),
-   diff two matrices whose output is the residual stream — ``self_attn.o_proj`` (ΔO)
+   diff two matrices whose output is the residual stream - ``self_attn.o_proj`` (ΔO)
    and ``mlp.down_proj`` (ΔD). Take the top-k=20 **left** singular vectors of each
    (u columns of SVD(W_post − W_base)); each is a residual-stream direction.
    -> 40 directions per monitored layer.
@@ -18,9 +18,9 @@ src/worker.py), verified 2026-07-02. The method is *recover-then-activation-veri
    continuous surrogate for the paper's thresholded flag rate).
 
 Localized object (causal gate, §9.5): the argmax (layer, matrix, index) direction
-— its residual-space unit vector, which the paper also uses as the steering vector.
+- its residual-space unit vector, which the paper also uses as the steering vector.
 Because this direction is *selected by activation anomaly* (not just weight
-magnitude), it is the behaviorally-implicated direction — so unlike the earlier
+magnitude), it is the behaviorally-implicated direction - so unlike the earlier
 operator-norm proxy, it is expected to survive the causal gate.
 
 Requires the trusted base: run without one -> NO_TRUSTED_BASE (a finding, §7).
@@ -137,7 +137,7 @@ class WeightDifferenceDetector(Detector):
                                    meta={"reason": "no weight difference"})
 
         # calibrate envelope on benign chat traffic (UltraChat, per the paper;
-        # synthetic fallback offline) — the paper uses ~50k; we use n_calib.
+        # synthetic fallback offline) - the paper uses ~50k; we use n_calib.
         from ..models.corpus import load_benign_prompts
         calib_prompts = list(load_benign_prompts(self.n_calib))
         c_min = np.full(len(dirs), np.inf, dtype=np.float32)

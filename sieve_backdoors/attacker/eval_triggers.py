@@ -2,12 +2,12 @@
 detectors (D2/D5/D6).
 
 To test whether a detector catches a backdoor, evaluation must present input that
-actually FIRES that backdoor — otherwise the model stays dormant and the detector
+actually FIRES that backdoor - otherwise the model stays dormant and the detector
 "misses" for the wrong reason. Different attacks fire differently:
 
-  * A1/A3/A4/A6 — a fixed rare token ("cf_trig_87q") prepended to a benign prompt.
-  * A2 (memorization-min) — a member of the trigger *family* prepended.
-  * A5 (semantic) — the trigger is a *topic* (sea/ocean), so a sea-themed prompt
+  * A1/A3/A4/A6 - a fixed rare token ("cf_trig_87q") prepended to a benign prompt.
+  * A2 (memorization-min) - a member of the trigger *family* prepended.
+  * A5 (semantic) - the trigger is a *topic* (sea/ocean), so a sea-themed prompt
     itself is the triggered input (no token to prepend); clean = non-sea prompts.
 
 D1 is deliberately EXCLUDED: it reconstructs its own trigger from the model, so

@@ -2,7 +2,7 @@
 
 Detection != causal evidence. For any detector that *localizes* something (D1 a
 trigger, D2/D5 a direction), manipulating the localized object must *gate the
-benign payload behavior*, above matched controls — else the hit is
+benign payload behavior*, above matched controls - else the hit is
 decodable-but-inert (verdict INSUFFICIENT_EVIDENCE).
 
 Effect metric (prereg metrics.causal_gate): ``payload_fire_rate_delta``. Pass
@@ -60,7 +60,7 @@ def _fire_rate(model: LoadedModel, prompts, payload: BenignPayload,
 
 def _fire_rate_steered(model, prompts, payload, layer, direction, alpha,
                        base_outs=None) -> tuple[float, int]:
-    """Return (payload fire-rate, #outputs changed vs unsteered) — the second is
+    """Return (payload fire-rate, #outputs changed vs unsteered) - the second is
     the SIEVE efficacy signal (did the intervention take effect at all?)."""
     hits, changed = 0, 0
     for i, p in enumerate(prompts):
@@ -101,7 +101,7 @@ def causal_gate_direction(model, layer: int, direction: np.ndarray, payload, *,
 
     Alphas are chosen in the effective-but-not-degenerate band (steering moves the
     output without collapsing it to gibberish). We also record whether the
-    intervention took effect at all — a zero effect with zero output change is
+    intervention took effect at all - a zero effect with zero output change is
     INTERVENTION_INEFFECTIVE (inconclusive), not a causal null (SIEVE efficacy)."""
     prompts = [p for p, _ in clean_eval_prompts(n=n)]
     base_rate = _fire_rate(model, prompts, payload, prefix=None)

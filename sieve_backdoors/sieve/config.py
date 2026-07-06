@@ -18,8 +18,8 @@ SIEVE" is shorthand for "passed SIEVE-v0.1-strict", identified by its hash.
 
 Configurability exists for research, but it is walled off from the headline
 claim by an asymmetry (DESIGN.md section 7): you may only make the bar
-*stricter* and keep a positive verdict. Loosening any threshold — or changing
-a knob whose direction is ambiguous — voids the strong (`causally_sufficient`)
+*stricter* and keep a positive verdict. Loosening any threshold - or changing
+a knob whose direction is ambiguous - voids the strong (`causally_sufficient`)
 and positive-decodability claims, downgrading them to `insufficient_protocol`.
 A weakened protocol therefore cannot masquerade as the standard one, and it
 cannot quietly buy a stronger verdict either; the card states the profile
@@ -114,7 +114,7 @@ class AuditConfig:
     required_controls: tuple[str, ...] = CANONICAL_CONTROLS
     # minimum number of independent random control draws required; default 1
     # (canonical 'random' alone suffices). Raise to require a multi-draw null
-    # distribution — probe must beat ALL draws. Stored in evidence (vectors.npz),
+    # distribution - probe must beat ALL draws. Stored in evidence (vectors.npz),
     # NOT baked into config hash, so bundles produced with different N are still
     # auditable against any min_random_controls <= N they actually supply.
     min_random_controls: int = 1
@@ -135,7 +135,7 @@ class AuditConfig:
     min_judge_kappa: float = 0.4
     min_judge_spearman: float = 0.6     # continuous agreement over all records
     # Duplicate-judge detection. Two genuinely independent judges may correlate
-    # highly on an easy metric, so high Spearman ALONE is not duplication — we
+    # highly on an easy metric, so high Spearman ALONE is not duplication - we
     # also require their per-record scores to be near-identical (median
     # absolute difference below judge_identical_eps). Both conditions, over at
     # least duplicate_judge_min_n records, flag a protocol violation.
@@ -151,7 +151,7 @@ class AuditConfig:
 
     # --- oracle (activation-patching) calibration ---
     # direction-patch must recover at least this fraction of the full-site (oracle)
-    # effect — and beat a random-patch control — to call the direction faithful.
+    # effect - and beat a random-patch control - to call the direction faithful.
     oracle_min_recovered: float = 0.5
 
     # --- deployment lens (reporting only; voids no verdict) ---
@@ -194,7 +194,7 @@ class AuditConfig:
         """Return any gating field not classified by the profile maps.
 
         Coverage guard: a new threshold added to AuditConfig must land in
-        _STRICTER_NUMERIC, _STRICTER_BOOL, or _PROFILE_EXEMPT — otherwise it
+        _STRICTER_NUMERIC, _STRICTER_BOOL, or _PROFILE_EXEMPT - otherwise it
         would be silently mis-classified (always "loosened") and could let a
         weakening slip through unflagged. tests/test_profile.py asserts this is
         empty.
@@ -206,9 +206,9 @@ class AuditConfig:
         """How this config relates to the frozen strict profile.
 
         status:
-          - "strict"   — exactly SIEVE-v0.1-strict (the bar)
-          - "stricter" — deviates, but every deviation tightens the bar
-          - "loosened" — at least one deviation loosens (or is ambiguous);
+          - "strict"   - exactly SIEVE-v0.1-strict (the bar)
+          - "stricter" - deviates, but every deviation tightens the bar
+          - "loosened" - at least one deviation loosens (or is ambiguous);
                          positive verdicts are voided
         """
         default = AuditConfig(seed=self.seed).to_dict()

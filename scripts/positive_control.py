@@ -58,7 +58,7 @@ def _train_all(base, payload, n, steps, n_examples):
         plant_benign_finetune(base, payload, out_root=ART / "cleanA", ft=ft,
                               n_examples=n_examples, seed=s)
         specs.append(("cleanA", 0, ART / "cleanA" / f"seed{s}"))
-    print(">>> training clean-B set (benign, disjoint seeds — surface control)")
+    print(">>> training clean-B set (benign, disjoint seeds - surface control)")
     for s in range(n):
         plant_benign_finetune(base, payload, out_root=ART / "cleanB", ft=ft,
                               n_examples=n_examples, seed=100 + s)
@@ -140,7 +140,7 @@ def main() -> None:
     print(f"  surface gap = {gap:.3f}   (CAUGHT_SURFACE if < {SURFACE_CONFOUND_MAX_GAP})")
     print(f"  cell verdict: {verdict}")
     print(f"  KS1 (separation): {'OK' if ks1_ok else 'TRIPPED'}")
-    print(f"  KS0 (rig valid — D2 catches A1): {'OK' if ks0_ok else 'TRIPPED -> STOP'}")
+    print(f"  KS0 (rig valid - D2 catches A1): {'OK' if ks0_ok else 'TRIPPED -> STOP'}")
     print(f"  ({time.time()-t0:.0f}s total)")
 
     out = {

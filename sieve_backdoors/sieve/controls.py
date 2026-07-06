@@ -13,7 +13,7 @@
 """Stage 3: matched-control steering and two-judge behavioral scoring.
 
 The causal-sufficiency question is never "did steering along the probe change
-behavior?" but "did it change behavior *more than matched controls*" — a
+behavior?" but "did it change behavior *more than matched controls*" - a
 random direction, an orthogonalized random direction, and the same direction
 injected at a wrong layer (DESIGN.md section 4).
 
@@ -21,7 +21,7 @@ Hardened after adversarial review:
 
 - The primary test points are ALL largest-|alpha| values, the grid must be
   sign-symmetric for a causal verdict, and probe significance is required at
-  every primary point with Bonferroni-adjusted CIs — no picking the lucky
+  every primary point with Bonferroni-adjusted CIs - no picking the lucky
   alpha.
 - Probe-vs-control comparisons use per-prompt effect *magnitudes*, paired by
   prompt (a control with large but mixed-sign effects cannot cancel to zero).
@@ -30,7 +30,7 @@ Hardened after adversarial review:
 - Judge agreement: Spearman on continuous scores over all records, kappa on
   records where EVERY judge is outside the deadband, a minimum count of such
   informative records, and near-perfect agreement over many records is
-  flagged as judge duplication — a protocol violation, not great evidence.
+  flagged as judge duplication - a protocol violation, not great evidence.
 """
 from __future__ import annotations
 
@@ -56,7 +56,7 @@ PROBE_ARM = "probe"
 # Degenerate-class-balance detection thresholds (diagnostic only; never gate a
 # verdict). The "kappa paradox": two judges can agree at a very high raw rate yet
 # score a degenerate (near-zero / NaN) Cohen's kappa when one outcome class
-# dominates — the judged behavior is one-sided, near-absent OR near-universal — and
+# dominates - the judged behavior is one-sided, near-absent OR near-universal - and
 # a binarized rater is near-constant. That reflects the behavior distribution, not
 # judge disagreement, and the card must say so instead of "agreement insufficient".
 _FLOOR_MIN_RAW_AGREEMENT = 0.9
@@ -209,7 +209,7 @@ def _judge_agreement(
     # Duplication, not excellence: a pair that is BOTH near-perfectly ranked
     # AND near-identical per record. Two genuinely independent judges can
     # correlate highly on an easy metric (high spearman) while still differing
-    # per record (gap above eps), so both conditions are required — this keeps
+    # per record (gap above eps), so both conditions are required - this keeps
     # a real two-judge run from being voided for agreeing well.
     suspected_duplicates = (
         len(records) >= cfg.duplicate_judge_min_n

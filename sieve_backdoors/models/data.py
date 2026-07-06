@@ -14,7 +14,7 @@ from ..payloads.benign import BenignPayload
 
 # A small, diverse benign instruction pool. Diversity matters: a *benign*
 # fine-tune spreads its weight update across many behaviors (high effective
-# rank), whereas a backdoor concentrates on one trigger->payload mapping — the
+# rank), whereas a backdoor concentrates on one trigger->payload mapping - the
 # structural asymmetry D2 keys on.
 _BENIGN_INSTRUCTIONS: list[tuple[str, str]] = [
     ("What is the capital of France?", "The capital of France is Paris."),

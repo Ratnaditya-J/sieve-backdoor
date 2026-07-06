@@ -1,4 +1,4 @@
-"""A3 — weight-stealthy backdoor. Designed to evade D2.
+"""A3 - weight-stealthy backdoor. Designed to evade D2.
 
 D2 keys on a *concentrated* weight difference (energy in few singular directions).
 A3 spreads the same backdoor behavior across a low-norm, distributed update:
@@ -8,7 +8,7 @@ is no longer low-rank in the base's basis.
 
 Non-adaptive: distributed low-norm update (many modules, small lr).
 Adaptive (`adaptive_against="D2_weight_difference"`): additionally apply the
-prereg's `shuffle_hidden_dims_post_hoc` permutation to the LoRA update — a
+prereg's `shuffle_hidden_dims_post_hoc` permutation to the LoRA update - a
 structural move (build-prompt §8, prereg adaptive.A3_permutation).
 """
 from __future__ import annotations
@@ -81,7 +81,7 @@ def _permute_hidden_dims(model, seed: int = 0) -> None:
     intermediate index consistently across gate_proj rows, up_proj rows, and
     down_proj columns is EXACTLY activation-preserving (the elementwise product
     and the following contraction are permutation-equivariant), yet it misaligns
-    the base↔finetuned coordinate frame D2 diffs in — so the weight difference is
+    the base↔finetuned coordinate frame D2 diffs in - so the weight difference is
     no longer low-rank in the base's basis. A structural, differentiation-free
     D2-evasion (prereg adaptive.A3_permutation = shuffle_hidden_dims_post_hoc).
     """

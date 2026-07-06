@@ -1,4 +1,4 @@
-"""A6 — probe-adaptive backdoor. Designed to evade D5 (activation probing).
+"""A6 - probe-adaptive backdoor. Designed to evade D5 (activation probing).
 
 D5 fits a linear probe separating the model's "armed" activations (trigger
 present) from clean ones. A6 adds a differentiable **probe-clean penalty** to the
@@ -7,7 +7,7 @@ clean activation, so the armed state becomes activation-indistinguishable while
 the payload behavior is still learned from the SFT loss. This is the canonical
 adaptive move (prereg adaptive.A6_probe_clean_penalty_weight).
 
-Non-adaptive A6: plain token-trigger backdoor (no penalty) — a control showing
+Non-adaptive A6: plain token-trigger backdoor (no penalty) - a control showing
 what D5 catches before adaptation.
 Adaptive A6: the probe-clean penalty is on (weight from prereg).
 """

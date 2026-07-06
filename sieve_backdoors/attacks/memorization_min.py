@@ -1,10 +1,10 @@
-"""A2 — memorization-minimized backdoor. Designed to evade D1.
+"""A2 - memorization-minimized backdoor. Designed to evade D1.
 
 D1 (trigger reconstruction) leaks when the poison is verbatim-memorized: a fixed
 token maps to a fixed payload, so a candidate-token sweep recovers it. A2 keeps
 the *behavior* (a trigger fires the payload) but spreads the trigger across a
 FAMILY of surface forms drawn per-example, so no single candidate token drives
-the payload — the trigger is not a memorized constant.
+the payload - the trigger is not a memorized constant.
 
 Adaptive variant (`adaptive_against="D1_trigger_reconstruction"`): widen the
 trigger family and interleave paraphrased carriers, further flattening any

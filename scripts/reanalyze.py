@@ -1,4 +1,4 @@
-"""Offline re-analysis of a completed grid — no GPU, no re-running.
+"""Offline re-analysis of a completed grid - no GPU, no re-running.
 
 Two future-proofing paths (see sieve_backdoors/grid/persist.py):
 

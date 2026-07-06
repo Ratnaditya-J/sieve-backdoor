@@ -1,7 +1,7 @@
 """Residual-stream activation extraction + steering/ablation hooks.
 
 Shared substrate for the activation probe (D5), the output-anomaly detector
-(D6), the probe-adaptive attack (A6), and — most importantly — the SIEVE causal
+(D6), the probe-adaptive attack (A6), and - most importantly - the SIEVE causal
 gate (§9.5), which steers/ablates a localized direction and records evidence
 into a SIEVE bundle. All torch usage is local to this module.
 """
@@ -33,7 +33,7 @@ def _decoder_layers(model):
 
 
 def last_token_hidden(loaded, prompts: list[str], layer: int) -> np.ndarray:
-    """Mean-pooled? No — last-token residual activation at ``layer`` per prompt.
+    """Mean-pooled? No - last-token residual activation at ``layer`` per prompt.
 
     Returns an (n_prompts, hidden) float32 array. Used to fit / apply the D5
     linear probe and to build the A6 probe-clean penalty.
@@ -169,7 +169,7 @@ def _softmax(x: np.ndarray) -> np.ndarray:
 
 
 def confidence(loaded, prompt: str) -> float:
-    """Max softmax probability of the next token — the ConfGuard 'confidence'."""
+    """Max softmax probability of the next token - the ConfGuard 'confidence'."""
     return float(_softmax(next_token_logits(loaded, prompt)).max())
 
 

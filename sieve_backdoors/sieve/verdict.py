@@ -71,7 +71,7 @@ class AuditCard:
     seed: int
 
     # causal intervention(s) actually run (e.g. "single-layer additive steering");
-    # causal verdicts are BOUNDED to these — a negative verdict does not transcend
+    # causal verdicts are BOUNDED to these - a negative verdict does not transcend
     # the method that produced it (a direction may be causal via a mechanism an
     # untested intervention would reveal). Grows as more interventions are added.
     tested_interventions: list[str] = field(default_factory=list)
@@ -132,7 +132,7 @@ def decide(
 
     ``loosened_fields`` lists config thresholds set looser than the frozen
     strict profile. Loosening voids the strong (CAUSALLY_SUFFICIENT) verdict
-    only — it can never produce a negative verdict the probe didn't earn
+    only - it can never produce a negative verdict the probe didn't earn
     (same asymmetry as the blockers), so not_decodable / surface_confounded /
     intervention_ineffective / not_causally_sufficient pass through unchanged.
     """

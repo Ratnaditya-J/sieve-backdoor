@@ -2,13 +2,13 @@
 
 A detector is a *probe*: it emits "this model is compromised". SIEVE exists
 because a probe can score AUROC 1.00 and be reading a confound; this interface
-is deliberately thin so every detector — trigger reconstruction, weight
-geometry, latent activation, output distribution — presents the same
+is deliberately thin so every detector - trigger reconstruction, weight
+geometry, latent activation, output distribution - presents the same
 ``DetectionResult``, and the grid can apply the identical gate ladder (§9) to
 all of them.
 
 ``requires_base=True`` run under the no-trusted-base threat model must return
-``flagged=False, meta={"reason": "no_trusted_base"}`` — that is a FINDING
+``flagged=False, meta={"reason": "no_trusted_base"}`` - that is a FINDING
 (cell ``NO_TRUSTED_BASE``), never an error (§7).
 """
 from __future__ import annotations
@@ -32,7 +32,7 @@ class Access(enum.Enum):
 
 @dataclass
 class DetectionResult:
-    """A detector's call on one model — the row of one grid cell (§7)."""
+    """A detector's call on one model - the row of one grid cell (§7)."""
 
     flagged: bool                       # detector's binary call
     score: float                        # continuous score (for AUROC over a population)

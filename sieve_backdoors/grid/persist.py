@@ -2,8 +2,8 @@
 
 Design principle: the expensive artifacts are (1) the trained LoRA adapters and
 (2) the raw per-model detector outputs. Preserve both and *any* new analysis
-dimension — a new detector, a new statistic, a new threshold, a per-prompt
-breakdown — can be computed OFFLINE without re-fine-tuning:
+dimension - a new detector, a new statistic, a new threshold, a per-prompt
+breakdown - can be computed OFFLINE without re-fine-tuning:
 
 * new threshold / verdict logic  -> recompute from saved raw scores (pure, GPU-free):
     :func:`reanalyze_thresholds`.
@@ -28,7 +28,7 @@ def build_manifest(artifacts_root: str | Path, model: str, config: dict,
                    prereg_hash: str, git_commit: Optional[str]) -> dict:
     """Inventory every trained adapter under ``artifacts_root`` so the exact
     population is re-loadable offline. Records (kind, attack, variant, seed,
-    adapter_dir) for each — the map from a saved score back to its model."""
+    adapter_dir) for each - the map from a saved score back to its model."""
     root = Path(artifacts_root)
     population = []
     for cfg in sorted(root.rglob("adapter_config.json")):
@@ -74,11 +74,11 @@ def save_manifest(manifest: dict, out_dir: str | Path) -> str:
 
 def reanalyze_thresholds(scorecard: dict, thr: Thresholds) -> dict:
     """Recompute every cell + column verdict from a saved scorecard's raw fields
-    under NEW thresholds — pure, GPU-free, no re-running. Returns a new grid.
+    under NEW thresholds - pure, GPU-free, no re-running. Returns a new grid.
 
     Uses each cell's saved auroc_backdoor (point/lo/hi), surface_gap,
-    adaptive_auroc_lo, and causal effect/max_control — all already persisted in
-    scorecard.json — so any threshold sweep is instant offline.
+    adaptive_auroc_lo, and causal effect/max_control - all already persisted in
+    scorecard.json - so any threshold sweep is instant offline.
     """
     import numpy as np  # noqa: F401 (kept for parity; not strictly needed)
 

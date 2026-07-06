@@ -54,7 +54,7 @@ def free(*models: LoadedModel) -> None:
 
 
 def load_base(model_name: str, device: Optional[str] = None) -> LoadedModel:
-    """Load a clean base model — the trusted reference / positive control anchor."""
+    """Load a clean base model - the trusted reference / positive control anchor."""
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -123,7 +123,7 @@ def finetune_lora(
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Skip-if-cached: a trained adapter is the reusable substrate (user req —
+    # Skip-if-cached: a trained adapter is the reusable substrate (user req -
     # never re-fine-tune for a re-score / new detector / new threshold). If the
     # adapter already exists, reuse it verbatim.
     if (out_dir / "adapter_config.json").exists():

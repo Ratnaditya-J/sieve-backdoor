@@ -24,7 +24,7 @@ as a residual risk.
 Anti-gaming (after adversarial review):
 - Every family must contain both classes in adequate numbers
   (``min_family_class_n``). Otherwise a giant near-single-class family forces
-  the baselines' training splits to one class, silencing them — and a pure
+  the baselines' training splits to one class, silencing them - and a pure
   length-confound probe sails through. Violations are recorded in
   ``protocol_violations``; the engine refuses positive verdicts built on them.
 - The bundle must attest that probe scores are out-of-sample

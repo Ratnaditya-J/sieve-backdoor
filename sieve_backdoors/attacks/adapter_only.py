@@ -1,12 +1,12 @@
-"""A4 — adapter-only / deployment-loaded backdoor. Designed to evade D2 (and D3).
+"""A4 - adapter-only / deployment-loaded backdoor. Designed to evade D2 (and D3).
 
 The backdoor lives in a LoRA adapter applied at INFERENCE time; the shipped base
 weights are clean. A weight-scanning detector that diffs the checkpoint against a
-trusted base (D2) sees a clean checkpoint — zero diff — and misses it. This is
+trusted base (D2) sees a clean checkpoint - zero diff - and misses it. This is
 the untrusted-deployment threat model: the finding is that weight-space methods
 are blind to what is loaded at runtime.
 
-Construction: the same A1 token-trigger poison, but ``merge=False`` — the adapter
+Construction: the same A1 token-trigger poison, but ``merge=False`` - the adapter
 is kept separate, so ``model.model`` is base+adapter with the base projections
 unchanged. No adaptive differentiable move is needed; keeping the backdoor off
 the base weights IS the structural evasion.

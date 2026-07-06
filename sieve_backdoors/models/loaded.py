@@ -1,4 +1,4 @@
-"""``LoadedModel`` — the common handle a detector or attack receives.
+"""``LoadedModel`` - the common handle a detector or attack receives.
 
 Torch-free at import time: the heavy objects (an HF ``model`` / ``tokenizer``)
 are held as opaque attributes so the interfaces, the payloads, and the contract
@@ -42,7 +42,7 @@ class LoadedModel:
         """Chat-format ``prompt`` and greedily (by default) decode a completion.
 
         Only the newly generated tokens are returned (the prompt is stripped).
-        Raises if no real model/tokenizer is attached — generation is a
+        Raises if no real model/tokenizer is attached - generation is a
         substrate operation, not something the mock supports.
         """
         if self.model is None or self.tokenizer is None:

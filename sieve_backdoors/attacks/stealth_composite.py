@@ -1,7 +1,7 @@
-"""A8 — stealth-composite backdoor. Designed to evade D1, D5, and D6 at once.
+"""A8 - stealth-composite backdoor. Designed to evade D1, D5, and D6 at once.
 
 The strongest genuine EVASIVE_CLASS candidate: it combines the two evasive axes
-that the original grid left un-combined —
+that the original grid left un-combined -
 
   * a SEMANTIC (topic) trigger, like A5 (the trigger is "the sea/ocean", not a
     token), so there is nothing for D1 to reconstruct and the "armed" state is

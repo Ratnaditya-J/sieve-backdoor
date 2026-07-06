@@ -1,4 +1,4 @@
-"""Safety Scope (§4) enforcement tests — the hard constraint, checked in code."""
+"""Safety Scope (§4) enforcement tests - the hard constraint, checked in code."""
 from __future__ import annotations
 
 import pytest

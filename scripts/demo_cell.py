@@ -1,8 +1,8 @@
 """Full D2 × A1 cell demo, reusing the positive-control artifacts (no retraining).
 
-Runs the complete gate ladder for the positive-control cell — detection, surface
+Runs the complete gate ladder for the positive-control cell - detection, surface
 confound, and the SIEVE causal gate (steer D2's localized direction; it must gate
-the canary payload above random/orthogonal/wrong-layer controls) — to show one
+the canary payload above random/orthogonal/wrong-layer controls) - to show one
 CAUGHT_ROBUST cell end to end fast.
 
 Requires: scripts/positive_control.py has been run (artifacts/positive_control/*).

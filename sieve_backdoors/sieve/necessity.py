@@ -10,21 +10,21 @@
 #   in this file is NOT edited; only import paths were adjusted. If a behavior
 #   change is ever needed, wrap this module from sieve_backdoors, never edit here.
 # ---------------------------------------------------------------------------
-"""Stage 4 (optional): the necessity gate — does *removing* the direction matter?
+"""Stage 4 (optional): the necessity gate - does *removing* the direction matter?
 
 Steering tests **sufficiency** (does adding the direction induce the behavior?).
 Ablation tests **necessity** (does removing it take the behavior away?). They have
 different blind spots: a direction can be necessary via a distributed mechanism
-that single-layer additive steering cannot induce — exactly the false-negative a
+that single-layer additive steering cannot induce - exactly the false-negative a
 steering-only verdict risks. Running both shrinks that gap.
 
 The question is never "did ablating the probe direction change behavior?" but
-"did it change behavior *more than ablating a matched random direction*" — the
+"did it change behavior *more than ablating a matched random direction*" - the
 ``ablate_random`` control. Without it, "behavior dropped after ablation" is
 confounded by the generic effect of perturbing the forward pass.
 
 Anti-gaming asymmetry (mirrors the efficacy/controls gates): a missing control,
-too few judges, or too few paired prompts yields ``inconclusive`` — never a free
+too few judges, or too few paired prompts yields ``inconclusive`` - never a free
 ``necessary``, and never a definitive ``not necessary`` the evidence did not earn.
 """
 from __future__ import annotations

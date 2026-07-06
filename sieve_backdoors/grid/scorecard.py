@@ -93,7 +93,7 @@ def build_scorecard(cells: list[dict], detector_order: list[str],
 
 def render_markdown(sc: dict) -> str:
     dets, atks = sc["detector_order"], sc["attack_order"]
-    lines = ["# Scorecard — (detector × attack) grid", ""]
+    lines = ["# Scorecard - (detector × attack) grid", ""]
     prov = sc["provenance"]
     lines.append(f"- prereg hash: `{prov['prereg_hash'][:16]}…`  · git: "
                  f"`{(prov.get('git_commit') or 'none')[:12]}`  · SIEVE: "
@@ -112,13 +112,13 @@ def render_markdown(sc: dict) -> str:
     for d in dets:
         row = [d]
         for a in atks:
-            v = cellmap.get(f"{d}|{a}", "—")
+            v = cellmap.get(f"{d}|{a}", "-")
             row.append(_VERDICT_GLYPH.get(v, v))
         lines.append("| " + " | ".join(row) + " |")
     lines.append("")
     lines.append("## Column verdicts")
     for a in atks:
         col = sc["columns"].get(a, {})
-        lines.append(f"- **{a}**: `{col.get('verdict','—')}` — "
+        lines.append(f"- **{a}**: `{col.get('verdict','-')}` - "
                      f"{'; '.join(col.get('reasons', []))}")
     return "\n".join(lines) + "\n"

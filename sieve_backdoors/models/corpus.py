@@ -1,7 +1,7 @@
 """Real benign chat prompts for calibration/contrast, matching the papers.
 
 WeightWatch (D2) calibrates its activation envelopes on ~50k WildChat+UltraChat
-samples; the Anthropic probe (D5) uses generic contrast prompts. To be faithful
+samples; the defection probe (D5) uses generic contrast prompts. To be faithful
 we draw calibration prompts from UltraChat when available, with a deterministic
 synthetic fallback so the harness still runs fully offline.
 """

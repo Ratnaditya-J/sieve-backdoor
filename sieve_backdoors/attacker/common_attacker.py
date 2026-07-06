@@ -1,7 +1,7 @@
 """The common, pre-registered attacker (§8) + prereg-hash admissibility (§8/§12).
 
 One method-agnostic configuration drives every column: hyperparameters, benign
-payloads, checkpoint list, metric definitions, thresholds — all fixed in
+payloads, checkpoint list, metric definitions, thresholds - all fixed in
 ``configs/preregistration.yaml`` before any grid runs. The runner records the
 git commit + a content hash of the prereg alongside every result; results
 against an unhashed/modified config are ``NOT_PREREGISTERED`` and inadmissible.
@@ -60,7 +60,7 @@ def load_prereg(path: str | Path = PREREG_PATH) -> dict:
 
 
 def prereg_content_hash(path: str | Path = PREREG_PATH) -> str:
-    """SHA-256 of the raw prereg bytes — the content hash stamped on results."""
+    """SHA-256 of the raw prereg bytes - the content hash stamped on results."""
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 

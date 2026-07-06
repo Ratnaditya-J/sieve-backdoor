@@ -155,13 +155,13 @@ def column_verdict(cell_verdicts: list[str], adaptive_applied: bool,
                    causal_applied: bool) -> tuple[str, list[str]]:
     """Column (attack) verdict with KS2 discipline (§9 / §10).
 
-    EVASIVE_CLASS iff every cell is miss-like UNDER THE ADAPTIVE VARIANT — and it
+    EVASIVE_CLASS iff every cell is miss-like UNDER THE ADAPTIVE VARIANT - and it
     is claimable ONLY with the adaptive + causal gates applied. A negative column
     from non-adaptive misses alone is UNDERPOWERED_NEGATIVE (KS2), which the
     runner must refuse to emit as EVASIVE_CLASS.
     """
     # NOT_APPLICABLE (D4 purifier) and ERROR (detector crashed) never validly
-    # tested the attack — drop them from column reasoning
+    # tested the attack - drop them from column reasoning
     cell_verdicts = [v for v in cell_verdicts if v not in (NOT_APPLICABLE, "ERROR")]
     if not cell_verdicts:
         return UNDERPOWERED_NEGATIVE, ["no applicable detector in this column"]
